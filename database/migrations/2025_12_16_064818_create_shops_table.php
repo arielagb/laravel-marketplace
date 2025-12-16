@@ -20,7 +20,7 @@ return new class extends Migration
             $table->boolean('is_active')->default(true);
             $table->boolean('is_deleted')->default(false);
             $table->decimal('commission_override',5,2)->nullable();
-            $table->json('settings')->nullable();
+            $table->text('settings')->nullable();
             $table->timestamps();
         });
 

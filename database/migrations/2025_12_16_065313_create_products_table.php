@@ -22,7 +22,7 @@ return new class extends Migration
             $table->integer('stock_quantity')->default(0);
             $table->boolean('is_published')->default(false);
             $table->boolean('is_deleted')->default(false);
-            $table->json('images')->nullable();
+            $table->text('images')->nullable();
             $table->timestamps();
         });
 

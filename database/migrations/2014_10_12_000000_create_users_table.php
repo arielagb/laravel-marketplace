@@ -15,6 +15,11 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('email')->unique();
+            $table->enum('role', ['admin','seller','buyer'])->default('buyer')->after('password');
+            $table->boolean('is_active')->default(true);
+            $table->boolean('is_blocked')->default(false);
+            $table->boolean('is_deleted')->default(false);
+            $table->json('profile_meta')->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();

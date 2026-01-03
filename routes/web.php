@@ -17,9 +17,13 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-//uniquement pour les visiteurs 
-Route::middleware(['guest'])->group(function () {
-    Route::get('/Home', function () {
-        return view('Home') ;
-    });
+Route::get('/home', function () {
+    return view('home') ;
 });
+
+//uniquement pour les visiteurs 
+// Route::middleware(['guest'])->group(function () {
+//     Route::get('/Home', function () {
+//         return view('Home') ;
+//     });
+// });

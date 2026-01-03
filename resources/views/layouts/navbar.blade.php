@@ -8,12 +8,17 @@
 <body>
     <header>
         @auth
-        // The user is authenticated...
+            @if(Auth::user()->role === 'seller')
+                <a href="sellers.shop.create_shop">Create a shop</a>
+            @elseif(Auth::user()->role === 'buyer')
+                <a href="buyers.basket">Basket</a>
+            @endif
         @endauth
-
+ 
         @guest
             <a href="auth.login">Login</a>
             <a href="auth.register">Register</a>
+            <a href="products.index">Products</a>
         @endguest
     </header>
     <main>

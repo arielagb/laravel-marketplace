@@ -16,7 +16,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'role',         
+        'role_id',         
         'is_active',    
         'is_blocked',   
         'is_deleted',   
@@ -37,6 +37,12 @@ class User extends Authenticatable
         'profile_meta' => 'array', 
     ];
 
+    // Un user appartient à un rôle
+    public function role()
+    {
+        return $this->belongsTo(Role::class);
+    }
+
     // Un seller a un seul shop
     public function shop() {
         return $this->hasOne(Shop::class);
@@ -52,15 +58,18 @@ class User extends Authenticatable
         return $this->hasMany(Review::class);
     }
 
-    public function isAdmin() {
-        return $this->role === 'admin';
+   public function isAdmin()
+    {
+        return $this->role?->name === 'admin';
     }
 
-    public function isSeller() {
-        return $this->role === 'seller';
+    public function isSeller()
+    {
+        return $this->role?->name === 'seller';
     }
 
-    public function isBuyer() {
-        return $this->role === 'buyer';
+    public function isBuyer()
+    {
+        return $this->role?->name === 'buyer';
     }
 }

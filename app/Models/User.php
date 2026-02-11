@@ -60,16 +60,16 @@ class User extends Authenticatable
 
    public function isAdmin()
     {
-        return $this->role?->name === 'admin';
+        return $this->role?->name === '1';
     }
 
     public function isSeller()
     {
-        return $this->role?->name === 'seller';
+        return $this->role?->name === '2';
     }
 
     public function isBuyer()
     {
-        return $this->role?->name === 'buyer';
+        return $this->role?->name === '3';
     }
 }

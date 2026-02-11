@@ -10,8 +10,9 @@ class Role extends Model
     use HasFactory;
 
     protected $fillable = [
-        'name',
+        'created_at',
         'label',
+        'updated_at',
     ];
 
     // Un rôle peut avoir plusieurs users

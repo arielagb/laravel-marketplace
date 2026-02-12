@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\UserController;//tjrs penser a importer le controller 
 
 /*
 |--------------------------------------------------------------------------
@@ -18,8 +19,13 @@ Route::get('/', function () {
 });
 
 Route::get('/home', function () {
-    return view('home') ;
+    return view('home')->name('home');
 });
+
+Route::get('/register', [UserController::class, 'showSignUp'])->name('register');
+
+Route::get('/login', [UserController::class, 'showFormLogin'])->name('login');
+
 
 //uniquement pour les visiteurs 
 // Route::middleware(['guest'])->group(function () {

@@ -16,8 +16,9 @@
         @endauth
  
         @guest
-            <a href="auth.login">Login</a>
-            <a href="auth.register">Register</a>
+            <a href="{{ route('home') }}">Home</a>
+            <a href="{{ route('login') }}">Login</a> 
+            <a href="{{ route('register') }}">Register</a>
             <a href="products.index">Products</a>
         @endguest
     </header>

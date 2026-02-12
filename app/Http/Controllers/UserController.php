@@ -3,6 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use App\Models\User;
+
 
 class UserController extends Controller
 {
@@ -41,7 +45,7 @@ class UserController extends Controller
             'role_id' => 'required|exists:roles,id'
         ]);
 
-        User::create([
+        $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
@@ -69,6 +73,6 @@ class UserController extends Controller
 
     public function logout(){
         Auth::logout();
-        return redirect('/login')->route('login');
+        return redirect->route('login');
     }
 }

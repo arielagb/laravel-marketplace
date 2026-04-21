@@ -58,18 +58,18 @@ class User extends Authenticatable
         return $this->hasMany(Review::class);
     }
 
-   public function isAdmin()
+    public function isAdmin()
     {
-        return $this->role?->name === '1';
+        return $this->role?->label === 'Admin';
     }
 
     public function isSeller()
     {
-        return $this->role?->name === '2';
+        return $this->role?->label === 'Seller';
     }
 
     public function isBuyer()
     {
-        return $this->role?->name === '3';
+        return $this->role?->label === 'Buyer';
     }
 }

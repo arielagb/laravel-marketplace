@@ -57,19 +57,28 @@ class UserController extends Controller
         // return back()->widh('success', 'You have signed up sucessfully.');
     }
 
-    private function redirectbyRole(){
-        $role = auth()->user()->role->label;
+    private function redirectByRole(){
+    $role = auth()->user()->role->label;
 
-        if ($role === 'Admin') {
-            return redirect()->route('dashboard_admin');
-        }
-        if ($role === 'Seller') {
-            return redirect()->route('dashboard_seller');
-        }
-        if ($role === 'Buyer') {
-            return redirect()->route('dashboard_buyer');
-        }
+    if ($role === 'Admin') {
+        return redirect()->route('dashboard_admin');
     }
+    if ($role === 'Seller') {
+        $shop = auth()->user()->shop;
+        // Si le seller n'a pas encore de boutique, onboarding obligatoire
+        if (!$shop) {
+            return redirect()->route('seller.onboarding');
+        }
+        // Si la boutique est en attente de validation
+        if ($shop->status === 'pending') {
+            return redirect()->route('seller.pending');
+        }
+        return redirect()->route('dashboard_seller');
+    }
+    if ($role === 'Buyer') {
+        return redirect()->route('dashboard_buyer');
+    }
+}
 
     public function logout(){
     Auth::logout();

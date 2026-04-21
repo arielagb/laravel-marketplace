@@ -23,4 +23,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/admin/dashboard', fn() => view('users.admin.dashboard'))->name('dashboard_admin');
     Route::get('/seller/dashboard', fn() => view('users.sellers.dashboard'))->name('dashboard_seller');
     Route::get('/buyer/dashboard', fn() => view('users.buyers.dashboard'))->name('dashboard_buyer');
+
+    // Onboarding vendeur
+    Route::get('/seller/onboarding', [ShopController::class, 'onboarding'])->name('seller.onboarding');
+    Route::post('/seller/onboarding', [ShopController::class, 'storeOnboarding'])->name('seller.onboarding.store');
+    Route::get('/seller/pending', [ShopController::class, 'pending'])->name('seller.pending');
 });

@@ -72,7 +72,9 @@ class UserController extends Controller
     }
 
     public function logout(){
-        Auth::logout();
-        return redirect()->route('home');
-    }
+    Auth::logout();
+        request()->session()->invalidate();
+        request()->session()->regenerateToken();
+        return redirect('/');
+}
 }

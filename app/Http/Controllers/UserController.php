@@ -61,7 +61,7 @@ class UserController extends Controller
     $role = auth()->user()->role->label;
 
     if ($role === 'Admin') {
-        return redirect()->route('dashboard_admin');
+        return redirect()->route('admin.dashboard');
     }
     if ($role === 'Seller') {
         $shop = auth()->user()->shop;

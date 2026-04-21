@@ -15,18 +15,17 @@ class AdminController extends Controller
         $totalUsers   = User::count();
         $totalShops   = Shop::where('status', 'active')->count();
 
-        return view('users.admin.dashboard', compact('pendingShops', 'totalUsers', 'totalShops'));
-    }
+        return view('users.admin.dashboard', compact('pendingShops', 'totalUsers', 'totalShops'));    }
 
     public function approveShop(Shop $shop)
     {
         $shop->update(['status' => 'active', 'is_active' => true]);
-        return back()->with('success', "La boutique \"{$shop->name}\" a été approuvée ✅");
+        return redirect()->route('admin.dashboard')->with('success', "La boutique \"{$shop->name}\" a été approuvée ✅");
     }
 
     public function rejectShop(Shop $shop)
     {
         $shop->update(['status' => 'rejected', 'is_active' => false]);
-        return back()->with('success', "La boutique \"{$shop->name}\" a été rejetée.");
+        return redirect()->route('admin.dashboard')->with('success', "La boutique \"{$shop->name}\" a été rejetée.");
     }
 }

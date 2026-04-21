@@ -10,7 +10,7 @@
                 <span class="text-gray-600 text-sm">Bonjour, {{ auth()->user()->name }}</span>
 
                 @if(auth()->user()->isAdmin())
-                    <a href="{{ route('dashboard_admin') }}" class="text-sm text-indigo-600 hover:underline">Dashboard</a>
+                    <a href="{{ route('admin.dashboard') }}" class="text-sm text-indigo-600 hover:underline">Dashboard</a>
                 @elseif(auth()->user()->isSeller())
                     <a href="{{ route('dashboard_seller') }}" class="text-sm text-indigo-600 hover:underline">Dashboard</a>
                 @else

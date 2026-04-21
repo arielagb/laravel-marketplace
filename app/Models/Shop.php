@@ -18,8 +18,14 @@ class Shop extends Model
         'is_deleted',
         'commission_override',
         'settings',
+        'phone',
+        'address',
+        'payment_method',
+        'payment_details',
+        'id_document',
+        'category_id',
+        'status',
     ];
-
     protected $casts = [
         'is_active' => 'boolean',
         'is_deleted' => 'boolean',

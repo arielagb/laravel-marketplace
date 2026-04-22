@@ -1,24 +1,31 @@
 <nav class="bg-white shadow-md sticky top-0 z-50">
     <div class="container mx-auto px-4 flex items-center justify-between h-16">
 
-        <a href="{{ route('home') }}" class="text-xl font-bold text-indigo-600">
-            Marketplace
-        </a>
-
-        <a href="{{ route('products.index') }}" class="text-sm text-gray-600 hover:text-indigo-600">
-            Produits
-        </a>
+        <div class="flex items-center gap-6">
+            <a href="{{ route('home') }}" class="text-xl font-bold text-indigo-600">
+                Marketplace
+            </a>
+            <a href="{{ route('products.index') }}" class="text-sm text-gray-600 hover:text-indigo-600">
+                Produits
+            </a>
+        </div>
 
         <div class="flex items-center gap-6">
             @auth
                 <span class="text-gray-600 text-sm">Bonjour, {{ auth()->user()->name }}</span>
 
                 @if(auth()->user()->isAdmin())
-                    <a href="{{ route('admin.dashboard') }}" class="text-sm text-indigo-600 hover:underline">Dashboard</a>
+                    <a href="{{ route('admin.dashboard') }}" class="text-sm text-indigo-600 hover:underline">
+                        Admin
+                    </a>
                 @elseif(auth()->user()->isSeller())
-                    <a href="{{ route('dashboard_seller') }}" class="text-sm text-indigo-600 hover:underline">Dashboard</a>
+                    <a href="{{ route('seller.products') }}" class="text-sm text-indigo-600 hover:underline">
+                        Ma boutique
+                    </a>
                 @else
-                    <a href="{{ route('dashboard_buyer') }}" class="text-sm text-indigo-600 hover:underline">Dashboard</a>
+                    <a href="{{ route('dashboard_buyer') }}" class="text-sm text-indigo-600 hover:underline">
+                        Mon espace
+                    </a>
                 @endif
 
                 <form method="POST" action="{{ route('logout') }}">

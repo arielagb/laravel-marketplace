@@ -26,7 +26,7 @@ class Product extends Model
         'price' => 'decimal:2',
         'is_published' => 'boolean',
         'is_deleted' => 'boolean',
-        'images' => 'json',
+        'images' => 'array',
     ];
 
     public function shop()

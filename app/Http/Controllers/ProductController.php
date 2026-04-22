@@ -29,33 +29,28 @@ class ProductController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'title'       => 'required|string|max:255',
-            'category_id' => 'required|exists:categories,id',
-            'description' => 'nullable|string',
-            'price'       => 'required|numeric|min:0',
+            'title'          => 'required|string|max:255',
+            'category_id'    => 'required|exists:categories,id',
+            'description'    => 'nullable|string',
+            'price'          => 'required|numeric|min:0',
             'stock_quantity' => 'required|integer|min:0',
-            'images.*'    => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'images.*'       => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
         ], [
-            'title.required'       => 'Le titre du produit est obligatoire.',
-            'category_id.required' => 'Choisissez une catégorie.',
-            'price.required'       => 'Le prix est obligatoire.',
-            'price.numeric'        => 'Le prix doit être un nombre.',
+            'title.required'         => 'Le titre du produit est obligatoire.',
+            'category_id.required'   => 'Choisissez une catégorie.',
+            'price.required'         => 'Le prix est obligatoire.',
+            'price.numeric'          => 'Le prix doit être un nombre.',
             'stock_quantity.integer' => 'Le stock doit être un nombre entier.',
-            'images.*.image'       => 'Les fichiers doivent être des images.',
-            'images.*.max'         => 'Chaque image ne doit pas dépasser 2MB.',
+            'images.*.image'         => 'Les fichiers doivent être des images.',
+            'images.*.max'           => 'Chaque image ne doit pas dépasser 2MB.',
         ]);
 
         $imagePaths = [];
         if ($request->hasFile('images')) {
             foreach ($request->file('images') as $image) {
-                $imagePaths = [];
-                if ($request->hasFile('images')) {
-                    foreach ($request->file('images') as $image) {
-                        $filename = time() . '_' . uniqid() . '.' . $image->getClientOriginalExtension();
-                        $image->move(public_path('uploads/products'), $filename);
-                        $imagePaths[] = 'uploads/products/' . $filename;
-                    }
-                }
+                $filename = time() . rand(1000, 9999) . '.' . $image->getClientOriginalExtension();
+                $image->move(public_path('uploads/products'), $filename);
+                $imagePaths[] = 'uploads/products/' . $filename;
             }
         }
 
@@ -69,7 +64,7 @@ class ProductController extends Controller
             'description'    => $request->description,
             'price'          => $request->price,
             'stock_quantity' => $request->stock_quantity,
-            'images'         => json_encode($imagePaths),
+            'images'         => $imagePaths,
             'is_published'   => $request->has('is_published'),
         ]);
 
@@ -92,6 +87,16 @@ class ProductController extends Controller
             'stock_quantity' => 'required|integer|min:0',
         ]);
 
+        $imagePaths = $product->images ?? [];
+        if ($request->hasFile('images')) {
+            $imagePaths = [];
+            foreach ($request->file('images') as $image) {
+                $filename = time() . rand(1000, 9999) . '.' . $image->getClientOriginalExtension();
+                $image->move(public_path('uploads/products'), $filename);
+                $imagePaths[] = 'uploads/products/' . $filename;
+            }
+        }
+
         $product->update([
             'category_id'    => $request->category_id,
             'title'          => $request->title,
@@ -99,6 +104,7 @@ class ProductController extends Controller
             'description'    => $request->description,
             'price'          => $request->price,
             'stock_quantity' => $request->stock_quantity,
+            'images'         => $imagePaths,
             'is_published'   => $request->has('is_published'),
         ]);
 

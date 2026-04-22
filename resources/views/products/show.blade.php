@@ -53,14 +53,25 @@
         @endif
 
         @auth
-            @if(auth()->user()->isBuyer())
-                <button class="w-full bg-indigo-600 text-white py-3 rounded-xl font-semibold hover:bg-indigo-700 transition">
-                    🛒 Ajouter au panier
+        @if(auth()->user()->isBuyer())
+            @if($product->stock_quantity > 0)
+                <form method="POST" action="{{ route('cart.add', $product) }}">
+                    @csrf
+                    <button type="submit"
+                        class="w-full bg-indigo-600 text-white py-3 rounded-xl font-semibold hover:bg-indigo-700 transition">
+                        Ajouter au panier
+                    </button>
+                </form>
+            @else
+                <button disabled
+                    class="w-full bg-gray-300 text-gray-500 py-3 rounded-xl font-semibold cursor-not-allowed">
+                    Rupture de stock
                 </button>
             @endif
+        @endif
         @else
             <a href="{{ route('login') }}"
-               class="block w-full text-center bg-indigo-600 text-white py-3 rounded-xl font-semibold hover:bg-indigo-700 transition">
+            class="block w-full text-center bg-indigo-600 text-white py-3 rounded-xl font-semibold hover:bg-indigo-700 transition">
                 Connecte-toi pour acheter
             </a>
         @endauth

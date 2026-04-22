@@ -5,6 +5,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\ShopController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\CartController;
 
 // Pages publiques
 Route::get('/', fn() => view('welcome'))->name('home');
@@ -38,6 +39,13 @@ Route::post('/logout', [UserController::class, 'logout'])->name('logout')->middl
     Route::get('/seller/products/{product}/edit', [ProductController::class, 'edit'])->name('seller.products.edit');
     Route::put('/seller/products/{product}', [ProductController::class, 'update'])->name('seller.products.update');
     Route::delete('/seller/products/{product}', [ProductController::class, 'destroy'])->name('seller.products.destroy');
+
+    //Pour le panier
+    Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
+    Route::post('/cart/{product}', [CartController::class, 'add'])->name('cart.add');
+    Route::patch('/cart/{cartItem}', [CartController::class, 'update'])->name('cart.update');
+    Route::delete('/cart/{cartItem}', [CartController::class, 'remove'])->name('cart.remove');
+
 });
 
 // Routes admin

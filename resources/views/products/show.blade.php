@@ -13,13 +13,13 @@
     <div class="space-y-3">
         @if($product->images && is_array($product->images) && count($product->images) > 0)
             <div class="aspect-square bg-gray-100 rounded-xl overflow-hidden">
-                <img src="{{ asset($product->images[0])}}"
+                <img src="{{ asset($product->images[0]) }}"
                      class="w-full h-full object-cover" id="mainImage" />
             </div>
             @if(count($product->images) > 1)
                 <div class="flex gap-2 flex-wrap">
                     @foreach($product->images as $img)
-                        <img src="{{ asset('storage/' . $img) }}"
+                        <img src="{{ asset($img) }}"
                              class="w-16 h-16 rounded-lg object-cover cursor-pointer border-2 border-transparent hover:border-indigo-500"
                              onclick="document.getElementById('mainImage').src=this.src" />
                     @endforeach
@@ -34,16 +34,21 @@
     <div>
         <p class="text-sm text-indigo-500 mb-2">{{ $product->category->name ?? '' }}</p>
         <h1 class="text-3xl font-bold text-gray-800 mb-2">{{ $product->title }}</h1>
-        <p class="text-gray-400 text-sm mb-4">Vendu par <span class="text-gray-600 font-medium">{{ $product->shop->name ?? '' }}</span></p>
+        <p class="text-gray-400 text-sm mb-4">
+            Vendu par <span class="text-gray-600 font-medium">{{ $product->shop->name ?? '' }}</span>
+        </p>
 
-        <p class="text-3xl font-bold text-gray-900 mb-6">
+        <p class="text-3xl font-bold text-gray-900 mb-4">
             {{ number_format($product->price, 0, ',', ' ') }} FCFA
         </p>
 
-        @if($product->stock_quantity > 0)
-            <p class="text-green-600 text-sm mb-6">✅ En stock ({{ $product->stock_quantity }} disponibles)</p>
+        {{-- Indicateur de stock --}}
+        @if($product->stock_quantity <= 0)
+            <p class="text-red-500 text-sm mb-6 font-medium">❌ Rupture de stock</p>
+        @elseif($product->stock_quantity <= 5)
+            <p class="text-orange-500 text-sm mb-6 font-medium">⚠️ Plus que {{ $product->stock_quantity }} en stock !</p>
         @else
-            <p class="text-red-500 text-sm mb-6">❌ Rupture de stock</p>
+            <p class="text-green-600 text-sm mb-6">✅ En stock ({{ $product->stock_quantity }} disponibles)</p>
         @endif
 
         @if($product->description)
@@ -52,29 +57,39 @@
             </div>
         @endif
 
+        {{-- Bouton action --}}
         @auth
-        @if(auth()->user()->isBuyer())
-            @if($product->stock_quantity > 0)
-                <form method="POST" action="{{ route('cart.add', $product) }}">
-                    @csrf
-                    <button type="submit"
-                        class="w-full bg-indigo-600 text-white py-3 rounded-xl font-semibold hover:bg-indigo-700 transition">
-                        Ajouter au panier
+            @if(auth()->user()->isBuyer())
+                @if($product->stock_quantity > 0)
+                    <form method="POST" action="{{ route('cart.add', $product) }}">
+                        @csrf
+                        <button type="submit"
+                            class="w-full bg-indigo-600 text-white py-3 rounded-xl font-semibold hover:bg-indigo-700 transition">
+                            🛒 Ajouter au panier
+                        </button>
+                    </form>
+                @else
+                    <button disabled
+                        class="w-full bg-gray-300 text-gray-500 py-3 rounded-xl font-semibold cursor-not-allowed">
+                        Rupture de stock
                     </button>
-                </form>
-            @else
-                <button disabled
-                    class="w-full bg-gray-300 text-gray-500 py-3 rounded-xl font-semibold cursor-not-allowed">
-                    Rupture de stock
-                </button>
+                @endif
+            @elseif(auth()->user()->isSeller())
+                <p class="text-sm text-gray-400 text-center">
+                    Vous êtes vendeur — vous ne pouvez pas acheter.
+                </p>
+            @elseif(auth()->user()->isAdmin())
+                <p class="text-sm text-gray-400 text-center">
+                    Vous êtes admin — accès lecture seule.
+                </p>
             @endif
-        @endif
         @else
             <a href="{{ route('login') }}"
-            class="block w-full text-center bg-indigo-600 text-white py-3 rounded-xl font-semibold hover:bg-indigo-700 transition">
+               class="block w-full text-center bg-indigo-600 text-white py-3 rounded-xl font-semibold hover:bg-indigo-700 transition">
                 Connecte-toi pour acheter
             </a>
         @endauth
+
     </div>
 </div>
 

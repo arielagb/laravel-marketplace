@@ -3,7 +3,7 @@
 
         <div class="flex items-center gap-6">
             <a href="{{ route('home') }}" class="text-xl font-bold text-indigo-600">
-                Marketplace
+                Fafa
             </a>
             <a href="{{ route('products.index') }}" class="text-sm text-gray-600 hover:text-indigo-600">
                 Produits

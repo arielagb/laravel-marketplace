@@ -108,9 +108,10 @@
                 </div>
             </div>
 
-            <button class="w-full bg-indigo-600 text-white py-3 rounded-lg font-semibold hover:bg-indigo-700 transition text-sm">
-                Passer la commande
-            </button>
+            <a href="{{ route('checkout.index') }}"
+            class="block w-full text-center bg-indigo-600 text-white py-3 rounded-lg font-semibold hover:bg-indigo-700 transition text-sm">
+                Passer la commande 🎉
+            </a>
         </div>
 
     </div>

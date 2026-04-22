@@ -16,15 +16,18 @@
 
                 @if(auth()->user()->isAdmin())
                     <a href="{{ route('admin.dashboard') }}" class="text-sm text-indigo-600 hover:underline">
-                        Admin
+                        🛡️ Admin
                     </a>
                 @elseif(auth()->user()->isSeller())
                     <a href="{{ route('seller.products') }}" class="text-sm text-indigo-600 hover:underline">
-                        Ma boutique
+                        🏪 Ma boutique
                     </a>
                 @else
                     <a href="{{ route('cart.index') }}" class="text-sm text-indigo-600 hover:underline">
-                        🛒 Mon panier
+                        🛒 Panier
+                    </a>
+                    <a href="{{ route('orders.index') }}" class="text-sm text-indigo-600 hover:underline">
+                        📦 Commandes
                     </a>
                     <a href="{{ route('dashboard_buyer') }}" class="text-sm text-indigo-600 hover:underline">
                         Mon espace
@@ -35,9 +38,10 @@
                     @csrf
                     <button type="submit" class="text-sm text-red-500 hover:underline">Déconnexion</button>
                 </form>
-                @else
-                    <a href="{{ route('login') }}" class="text-sm text-gray-700 hover:text-indigo-600">Connexion</a>
-                    <a href="{{ route('register') }}" class="bg-indigo-600 text-white text-sm px-4 py-2 rounded hover:bg-indigo-700">S'inscrire</a>
+
+            @else
+                <a href="{{ route('login') }}" class="text-sm text-gray-700 hover:text-indigo-600">Connexion</a>
+                <a href="{{ route('register') }}" class="bg-indigo-600 text-white text-sm px-4 py-2 rounded hover:bg-indigo-700">S'inscrire</a>
             @endauth
         </div>
 

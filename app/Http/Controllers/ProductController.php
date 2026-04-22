@@ -13,11 +13,41 @@ class ProductController extends Controller
     {
         $shop = auth()->user()->shop;
         $products = Product::where('shop_id', $shop->id)
-                           ->where('is_deleted', false)
-                           ->latest()
-                           ->get();
+                        ->where('is_deleted', false)
+                        ->latest()
+                        ->get();
 
-        return view('users.sellers.dashboard', compact('products', 'shop'));
+        $orders = \App\Models\Order::where('shop_id', $shop->id)
+                                ->where('is_deleted', false)
+                                ->with(['items.product', 'user'])
+                                ->latest()
+                                ->take(5)
+                                ->get();
+
+        // Données pour le graphe — ventes des 7 derniers jours
+        $salesData = [];
+        $labels = [];
+        for ($i = 6; $i >= 0; $i--) {
+            $date = now()->subDays($i);
+            $labels[] = $date->format('d/m');
+            $salesData[] = \App\Models\Order::where('shop_id', $shop->id)
+                                            ->where('status', '!=', 'cancelled')
+                                            ->whereDate('created_at', $date)
+                                            ->sum('total_amount');
+        }
+
+        $totalRevenue = \App\Models\Order::where('shop_id', $shop->id)
+                                        ->whereIn('status', ['paid', 'shipped', 'delivered'])
+                                        ->sum('total_amount');
+
+        $totalOrders = \App\Models\Order::where('shop_id', $shop->id)
+                                        ->where('is_deleted', false)
+                                        ->count();
+
+        return view('users.sellers.dashboard', compact(
+            'products', 'shop', 'orders',
+            'salesData', 'labels', 'totalRevenue', 'totalOrders'
+        ));
     }
 
     public function create()
@@ -144,5 +174,16 @@ class ProductController extends Controller
             abort(404);
         }
         return view('products.show', compact('product'));
+    }
+
+    public function products()
+    {
+        $shop = auth()->user()->shop;
+        $products = Product::where('shop_id', $shop->id)
+                        ->where('is_deleted', false)
+                        ->latest()
+                        ->get();
+
+        return view('users.sellers.products.index', compact('products', 'shop'));
     }
 }

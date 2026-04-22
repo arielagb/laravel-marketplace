@@ -5,6 +5,10 @@
             Marketplace
         </a>
 
+        <a href="{{ route('products.index') }}" class="text-sm text-gray-600 hover:text-indigo-600">
+            Produits
+        </a>
+
         <div class="flex items-center gap-6">
             @auth
                 <span class="text-gray-600 text-sm">Bonjour, {{ auth()->user()->name }}</span>

@@ -31,10 +31,19 @@ class UserController extends Controller
         ]);
 
         if(Auth::attempt($request->only('email', 'password'))){
-            return $this->redirectbyRole();
+            $user = Auth::user();
+
+            if($user->is_blocked){
+                Auth::logout();
+                return back()->withErrors([
+                    'email' => 'Ton compte a été suspendu. Contacte le support pour plus d\'informations.'
+                ]);
+            }
+
+            return $this->redirectByRole();
         }
 
-        return back()->withErrors(['email'=> 'Email or password is wrong']);
+        return back()->withErrors(['email' => 'Email ou mot de passe incorrect.']);
     }
 
     public function signUp(Request $request){
@@ -73,7 +82,7 @@ class UserController extends Controller
         if ($shop->status === 'pending') {
             return redirect()->route('seller.pending');
         }
-        return redirect()->route('dashboard_seller');
+        return redirect()->route('seller.dashboard');
     }
     if ($role === 'Buyer') {
         return redirect()->route('dashboard_buyer');

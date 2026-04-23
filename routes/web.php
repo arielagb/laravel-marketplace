@@ -71,10 +71,27 @@ Route::middleware('auth')->group(function () {
     Route::put('/seller/settings', [ShopController::class, 'updateSettings'])->name('seller.settings.update');
 
     // Admin
-    Route::prefix('admin')->name('admin.')->group(function () {
+    Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
         Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
+
+        // Boutiques
+        Route::get('/shops', [AdminController::class, 'shops'])->name('shops.index');
         Route::post('/shops/{shop}/approve', [AdminController::class, 'approveShop'])->name('shops.approve');
         Route::post('/shops/{shop}/reject', [AdminController::class, 'rejectShop'])->name('shops.reject');
-    });
 
+        // Catégories
+        Route::get('/categories', [AdminController::class, 'categories'])->name('categories.index');
+        Route::post('/categories', [AdminController::class, 'storeCategory'])->name('categories.store');
+        Route::put('/categories/{category}', [AdminController::class, 'updateCategory'])->name('categories.update');
+        Route::delete('/categories/{category}', [AdminController::class, 'destroyCategory'])->name('categories.destroy');
+
+        // Utilisateurs
+        Route::get('/users', [AdminController::class, 'users'])->name('users.index');
+        Route::post('/users/{user}/block', [AdminController::class, 'blockUser'])->name('users.block');
+
+        // Commandes
+        Route::get('/orders', [AdminController::class, 'orders'])->name('orders.index');
+    
+        Route::get('/users/{user}', [AdminController::class, 'showUser'])->name('users.show');
+        });
 });

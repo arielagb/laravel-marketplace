@@ -9,12 +9,12 @@
 </div>
 
 {{-- Filtres --}}
-<form method="GET" action="{{ route('products.index') }}" class="bg-white rounded-xl shadow-sm p-4 mb-8 flex gap-4 flex-wrap">
-    <input type="text" name="search" value="{{ request('search') }}"
+<div class="bg-white rounded-xl shadow-sm p-4 mb-8 flex gap-4 flex-wrap items-center">
+    <input type="text" id="searchInput" value="{{ request('search') }}"
         placeholder="Rechercher un produit..."
         class="flex-1 border border-gray-300 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 min-w-48" />
 
-    <select name="category"
+    <select id="categorySelect"
         class="border border-gray-300 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
         <option value="">Toutes les catégories</option>
         @foreach($categories as $cat)
@@ -24,18 +24,11 @@
         @endforeach
     </select>
 
-    <button type="submit"
-        class="bg-indigo-600 text-white px-6 py-2 rounded-lg text-sm hover:bg-indigo-700 transition">
-        Filtrer
+    <button onclick="clearFilters()"
+        class="px-4 py-2 text-sm text-gray-500 hover:text-gray-700 border border-gray-300 rounded-lg transition">
+        Effacer
     </button>
-
-    @if(request('search') || request('category'))
-        <a href="{{ route('products.index') }}"
-           class="px-4 py-2 text-sm text-gray-500 hover:text-gray-700 border border-gray-300 rounded-lg">
-            Effacer
-        </a>
-    @endif
-</form>
+</div>
 
 {{-- Grille produits --}}
 @if($products->isEmpty())
@@ -45,10 +38,12 @@
         <p class="text-sm mt-1">Essaie avec d'autres mots-clés</p>
     </div>
 @else
-    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-8">
+    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-8" id="productsGrid">
         @foreach($products as $product)
         <a href="{{ route('products.show', $product) }}"
-           class="bg-white rounded-xl shadow-sm hover:shadow-md transition overflow-hidden group">
+           class="product-card bg-white rounded-xl shadow-sm hover:shadow-md transition overflow-hidden group"
+           data-title="{{ strtolower($product->title) }}"
+           data-category="{{ $product->category_id }}">
 
             {{-- Image --}}
             <div class="aspect-square bg-gray-100 overflow-hidden">
@@ -68,15 +63,70 @@
                 <p class="font-bold text-gray-900">
                     {{ number_format($product->price, 0, ',', ' ') }} FCFA
                 </p>
+                @if($product->stock_quantity <= 0)
+                    <p class="text-xs text-red-500 mt-1">Rupture de stock</p>
+                @elseif($product->stock_quantity <= 5)
+                    <p class="text-xs text-orange-500 mt-1">Plus que {{ $product->stock_quantity }} restants</p>
+                @endif
             </div>
         </a>
         @endforeach
     </div>
 
+    <div id="noResults" class="hidden text-center py-20 text-gray-400">
+        <div class="text-5xl mb-4">🔍</div>
+        <p class="text-lg font-medium">Aucun produit trouvé</p>
+        <p class="text-sm mt-1">Essaie avec d'autres mots-clés</p>
+    </div>
+
     {{-- Pagination --}}
-    <div class="mt-4">
+    <div class="mt-4" id="pagination">
         {{ $products->withQueryString()->links() }}
     </div>
 @endif
+
+<script>
+    const searchInput = document.getElementById('searchInput');
+    const categorySelect = document.getElementById('categorySelect');
+    const productCards = document.querySelectorAll('.product-card');
+    const noResults = document.getElementById('noResults');
+    const pagination = document.getElementById('pagination');
+
+    function filterProducts() {
+        const query = searchInput.value.toLowerCase().trim();
+        const categoryId = categorySelect.value;
+        let visibleCount = 0;
+
+        productCards.forEach(card => {
+            const title = card.dataset.title;
+            const cardCategory = card.dataset.category;
+
+            const matchSearch = query === '' || title.includes(query);
+            const matchCategory = categoryId === '' || cardCategory === categoryId;
+
+            card.style.display = (matchSearch && matchCategory) ? '' : 'none';
+            if (matchSearch && matchCategory) visibleCount++;
+        });
+
+        noResults.classList.toggle('hidden', visibleCount > 0);
+
+        // Cache la pagination quand un filtre est actif
+        if (pagination) {
+            pagination.style.display = (query || categoryId) ? 'none' : '';
+        }
+    }
+
+    searchInput.addEventListener('input', filterProducts);
+    categorySelect.addEventListener('change', filterProducts);
+
+    function clearFilters() {
+        searchInput.value = '';
+        categorySelect.value = '';
+        productCards.forEach(card => card.style.display = '');
+        noResults.classList.add('hidden');
+        if (pagination) pagination.style.display = '';
+        searchInput.focus();
+    }
+</script>
 
 @endsection

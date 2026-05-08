@@ -16,17 +16,6 @@
         <p class="text-sm text-gray-400 mt-1">Découvre nos articles</p>
     </a>
 
-    <div class="bg-white rounded-xl shadow-sm p-6 text-center opacity-50">
-        <div class="text-4xl mb-3">🛒</div>
-        <h2 class="font-semibold text-gray-800">Mon panier</h2>
-        <p class="text-sm text-gray-400 mt-1">Bientôt disponible</p>
-    </div>
-
-    <div class="bg-white rounded-xl shadow-sm p-6 text-center opacity-50">
-        <div class="text-4xl mb-3">📦</div>
-        <h2 class="font-semibold text-gray-800">Mes commandes</h2>
-        <p class="text-sm text-gray-400 mt-1">Bientôt disponible</p>
-    </div>
 </div>
 
 @endsection

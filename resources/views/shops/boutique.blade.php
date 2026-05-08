@@ -1,51 +1,76 @@
 @extends('layouts.app')
-@section('title', 'Nos produits')
+@section('title', $shop->name)
 
 @section('content')
 
-<div class="mb-8">
-    <h1 class="text-2xl font-bold text-gray-800">Tous les produits</h1>
-    <p class="text-gray-500 text-sm mt-1">{{ $products->total() }} produits disponibles</p>
+{{-- Header boutique --}}
+<div class="bg-white rounded-2xl shadow-sm p-8 mb-8">
+    <div class="flex items-start gap-6">
+
+        {{-- Avatar boutique --}}
+        <div class="w-20 h-20 rounded-2xl bg-indigo-100 flex items-center justify-center text-indigo-600 font-bold text-3xl flex-shrink-0">
+            {{ strtoupper(substr($shop->name, 0, 1)) }}
+        </div>
+
+        {{-- Infos --}}
+        <div class="flex-1">
+            <div class="flex items-center gap-3 mb-2">
+                <h1 class="text-2xl font-bold text-gray-800">{{ $shop->name }}</h1>
+                <span class="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full">✅ Boutique vérifiée</span>
+            </div>
+
+            @if($shop->category)
+                <p class="text-sm text-indigo-500 mb-2">{{ $shop->category->name }}</p>
+            @endif
+
+            @if($shop->description)
+                <p class="text-gray-500 text-sm leading-relaxed max-w-2xl">{{ $shop->description }}</p>
+            @endif
+
+            <div class="flex items-center gap-6 mt-4 text-sm text-gray-400">
+                <span>📦 {{ $products->count() }} produits</span>
+                <span>🛍️ {{ $totalSales }} ventes</span>
+                <span>📍 {{ $shop->address ?? 'Lomé, Togo' }}</span>
+            </div>
+        </div>
+    </div>
 </div>
 
 {{-- Filtres --}}
-<div class="bg-white rounded-xl shadow-sm p-4 mb-8 flex gap-4 flex-wrap items-center">
-    <input type="text" id="searchInput" value="{{ request('search') }}"
-        placeholder="Rechercher un produit..."
-        class="flex-1 border border-gray-300 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 min-w-48" />
+<div class="bg-white rounded-xl shadow-sm p-4 mb-6 flex gap-4 items-center">
+    <input type="text" id="searchInput"
+        placeholder="Rechercher dans cette boutique..."
+        class="flex-1 border border-gray-300 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
 
     <select id="categorySelect"
         class="border border-gray-300 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
         <option value="">Toutes les catégories</option>
-        @foreach($categories as $cat)
-            <option value="{{ $cat->id }}" {{ request('category') == $cat->id ? 'selected' : '' }}>
-                {{ $cat->name }}
-            </option>
+        @foreach($products->pluck('category')->filter()->unique('id') as $cat)
+            <option value="{{ $cat->id }}">{{ $cat->name }}</option>
         @endforeach
     </select>
 
     <button onclick="clearFilters()"
-        class="px-4 py-2 text-sm text-gray-500 hover:text-gray-700 border border-gray-300 rounded-lg transition">
+        class="px-4 py-2 text-sm text-gray-500 border border-gray-300 rounded-lg hover:bg-gray-50 transition">
         Effacer
     </button>
 </div>
 
-{{-- Grille produits --}}
+{{-- Produits --}}
 @if($products->isEmpty())
-    <div class="text-center py-20 text-gray-400">
-        <div class="text-5xl mb-4">🔍</div>
-        <p class="text-lg font-medium">Aucun produit trouvé</p>
-        <p class="text-sm mt-1">Essaie avec d'autres mots-clés</p>
+    <div class="text-center py-20 text-gray-400 bg-white rounded-xl shadow-sm">
+        <div class="text-5xl mb-4">📦</div>
+        <p class="text-lg font-medium">Aucun produit disponible</p>
+        <p class="text-sm mt-1">Cette boutique n'a pas encore de produits publiés</p>
     </div>
 @else
-    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-8" id="productsGrid">
+    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6" id="productsGrid">
         @foreach($products as $product)
         <a href="{{ route('products.show', $product) }}"
            class="product-card bg-white rounded-xl shadow-sm hover:shadow-md transition overflow-hidden group"
            data-title="{{ strtolower($product->title) }}"
            data-category="{{ $product->category_id }}">
 
-            {{-- Image --}}
             <div class="aspect-square bg-gray-100 overflow-hidden">
                 @if($product->images && is_array($product->images) && count($product->images) > 0)
                     <img src="{{ asset($product->images[0]) }}"
@@ -55,13 +80,9 @@
                 @endif
             </div>
 
-            {{-- Infos --}}
             <div class="p-4">
                 <p class="text-xs text-indigo-500 mb-1">{{ $product->category->name ?? '' }}</p>
                 <h3 class="font-semibold text-gray-800 text-sm mb-1 line-clamp-2">{{ $product->title }}</h3>
-                <p class="text-xs text-gray-400 mb-2 hover:text-indigo-500">
-                    {{ $product->shop->name ?? '' }}
-                </p>
                 <p class="font-bold text-gray-900">
                     {{ number_format($product->price, 0, ',', ' ') }} FCFA
                 </p>
@@ -78,12 +99,6 @@
     <div id="noResults" class="hidden text-center py-20 text-gray-400">
         <div class="text-5xl mb-4">🔍</div>
         <p class="text-lg font-medium">Aucun produit trouvé</p>
-        <p class="text-sm mt-1">Essaie avec d'autres mots-clés</p>
-    </div>
-
-    {{-- Pagination --}}
-    <div class="mt-4" id="pagination">
-        {{ $products->withQueryString()->links() }}
     </div>
 @endif
 
@@ -92,7 +107,6 @@
     const categorySelect = document.getElementById('categorySelect');
     const productCards = document.querySelectorAll('.product-card');
     const noResults = document.getElementById('noResults');
-    const pagination = document.getElementById('pagination');
 
     function filterProducts() {
         const query = searchInput.value.toLowerCase().trim();
@@ -100,22 +114,14 @@
         let visibleCount = 0;
 
         productCards.forEach(card => {
-            const title = card.dataset.title;
-            const cardCategory = card.dataset.category;
-
-            const matchSearch = query === '' || title.includes(query);
-            const matchCategory = categoryId === '' || cardCategory === categoryId;
+            const matchSearch = query === '' || card.dataset.title.includes(query);
+            const matchCategory = categoryId === '' || card.dataset.category === categoryId;
 
             card.style.display = (matchSearch && matchCategory) ? '' : 'none';
             if (matchSearch && matchCategory) visibleCount++;
         });
 
         noResults.classList.toggle('hidden', visibleCount > 0);
-
-        // Cache la pagination quand un filtre est actif
-        if (pagination) {
-            pagination.style.display = (query || categoryId) ? 'none' : '';
-        }
     }
 
     searchInput.addEventListener('input', filterProducts);
@@ -126,8 +132,6 @@
         categorySelect.value = '';
         productCards.forEach(card => card.style.display = '');
         noResults.classList.add('hidden');
-        if (pagination) pagination.style.display = '';
-        searchInput.focus();
     }
 </script>
 

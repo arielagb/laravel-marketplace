@@ -68,4 +68,24 @@ class ShopController extends Controller
     {
         return view('users.sellers.pending');
     }
+
+    public function show(Shop $shop)
+    {
+        if ($shop->status !== 'active') {
+            abort(404);
+        }
+
+        $products = $shop->products()
+                        ->where('is_published', true)
+                        ->where('is_deleted', false)
+                        ->with('category')
+                        ->latest()
+                        ->get();
+
+        $totalSales = \App\Models\OrderItem::whereHas('order', function($q) use ($shop) {
+            $q->where('shop_id', $shop->id)
+            ->whereIn('status', ['paid', 'shipped', 'delivered']);
+        })->sum('quantity');
+
+        return view('shops.boutique', compact('shop', 'products', 'totalSales'));    }
 }

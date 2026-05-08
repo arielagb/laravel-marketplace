@@ -35,7 +35,11 @@
         <p class="text-sm text-indigo-500 mb-2">{{ $product->category->name ?? '' }}</p>
         <h1 class="text-3xl font-bold text-gray-800 mb-2">{{ $product->title }}</h1>
         <p class="text-gray-400 text-sm mb-4">
-            Vendu par <span class="text-gray-600 font-medium">{{ $product->shop->name ?? '' }}</span>
+            Vendu par
+            <a href="{{ route('shop.show', $product->shop) }}"
+            class="text-indigo-500 hover:underline font-medium">
+                {{ $product->shop->name ?? '' }}
+            </a>
         </p>
 
         <p class="text-3xl font-bold text-gray-900 mb-4">

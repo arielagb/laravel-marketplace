@@ -14,6 +14,7 @@ use App\Http\Controllers\SellerOrderController;
 Route::get('/', fn() => view('welcome'))->name('home');
 Route::get('/products', [ProductController::class, 'publicIndex'])->name('products.index');
 Route::get('/products/{product}', [ProductController::class, 'show'])->name('products.show');
+Route::get('/shops/{shop:slug}', [ShopController::class, 'show'])->name('shop.show');
 
 // Auth (accessible seulement si NON connecté)
 Route::middleware('guest')->group(function () {

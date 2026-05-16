@@ -43,7 +43,7 @@ class User extends Authenticatable
         return $this->belongsTo(Role::class);
     }
 
-    // Un seller a un seul shop
+    // Un seller a un seul shop 
     public function shop() {
         return $this->hasOne(Shop::class);
     }

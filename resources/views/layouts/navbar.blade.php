@@ -2,7 +2,7 @@
     <div class="container mx-auto px-4 flex items-center justify-between h-16">
 
         <a href="{{ route('home') }}" class="flex items-center shrink-0">
-            <img class="h-20 w-auto object-contain" src="{{ asset('uploads/logo.png') }}" alt="Logo">
+            <img class="h-7 w-auto object-contain" src="{{ asset('uploads/logo.png') }}" alt="Logo">
         </a>
 
         <div class="flex items-center gap-6">

@@ -6,8 +6,7 @@
 <div class="min-h-screen flex items-center justify-center">
     <div class="bg-white p-8 rounded-xl shadow-md w-full max-w-md">
 
-        <h1 class="text-2xl font-bold text-gray-800 mb-2">Connexion</h1>
-        <p class="text-gray-500 text-sm mb-6">Content de te revoir 👋</p>
+        <h1 class="text-3xl font-bold text-gray-800 mb-4">Connexion</h1>
 
         @if($errors->any())
             <div class="mb-4 p-3 bg-red-100 text-red-700 rounded text-sm">
@@ -43,14 +42,14 @@
 
             <button
                 type="submit"
-                class="w-full bg-indigo-600 text-white py-2 rounded-lg text-sm font-semibold hover:bg-indigo-700 transition">
+                class="w-full bg-black text-white py-2 rounded-lg text-sm font-semibold hover:bg-gray-800 transition">
                 Se connecter
             </button>
         </form>
 
         <p class="text-center text-sm text-gray-500 mt-6">
             Pas encore de compte ?
-            <a href="{{ route('register') }}" class="text-indigo-600 hover:underline font-medium">S'inscrire</a>
+            <a href="{{ route('register') }}" class="text-black hover:underline font-medium">S'inscrire</a>
         </p>
 
     </div>

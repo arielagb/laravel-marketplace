@@ -8,6 +8,7 @@
         <div class="flex items-center gap-6">
             @auth
                 <span class="text-gray-600 text-sm">Bonjour, {{ auth()->user()->name }}</span>
+                <a href="{{ route('products.index') }}" class="text-sm text-gray-600 hover:text-indigo-600">Produits</a>
 
                 @if(auth()->user()->isAdmin())
                     <a href="{{ route('admin.dashboard') }}" class="text-sm text-indigo-600 hover:underline">
@@ -18,15 +19,9 @@
                         Ma boutique
                     </a>
                 @else
-                    <a href="{{ route('cart.index') }}" class="text-sm text-indigo-600 hover:underline">
-                        Panier
-                    </a>
-                    <a href="{{ route('orders.index') }}" class="text-sm text-indigo-600 hover:underline">
-                        Commandes
-                    </a>
-                    <a href="{{ route('dashboard_buyer') }}" class="text-sm text-indigo-600 hover:underline">
-                        Mon espace
-                    </a>
+                    <a href="{{ route('cart.index') }}" class="text-sm text-indigo-600 hover:underline">Panier</a>
+                    <a href="{{ route('orders.index') }}" class="text-sm text-indigo-600 hover:underline">Commandes</a>
+                    <a href="{{ route('dashboard_buyer') }}" class="text-sm text-indigo-600 hover:underline">Mon espace</a>
                 @endif
 
                 <form method="POST" action="{{ route('logout') }}">

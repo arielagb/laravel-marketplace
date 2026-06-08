@@ -6,7 +6,6 @@
 
 @if($orders->isEmpty())
     <div class="text-center py-20 text-gray-400 bg-white rounded-xl shadow-sm">
-        <div class="text-5xl mb-4">🧾</div>
         <p class="text-lg font-medium">Aucune commande pour l'instant</p>
     </div>
 @else
@@ -17,7 +16,7 @@
             <p class="text-sm text-gray-500">{{ $orders->count() }} commande(s) au total</p>
             <button type="submit"
                 class="bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-indigo-700 transition">
-                📦 Marquer comme expédiées
+                Marquer comme expédiées
             </button>
         </div>
 
@@ -33,6 +32,7 @@
                         <th class="px-4 py-3">Articles</th>
                         <th class="px-4 py-3">Montant</th>
                         <th class="px-4 py-3">Date</th>
+                        <th class="px-4 py-3">Détail</th>
                         <th class="px-4 py-3">Statut</th>
                     </tr>
                 </thead>
@@ -66,6 +66,12 @@
                         </td>
                         <td class="px-4 py-3 text-gray-400 text-xs">
                             {{ $order->created_at->format('d/m/Y H:i') }}
+                        </td>
+                        <td class="px-4 py-3">
+                            <a href="{{ route('orders.show', $order) }}"
+                            class="text-sm text-indigo-600 hover:underline">
+                                Voir détail 
+                            </a>
                         </td>
                         <td class="px-4 py-3">
                             <span class="text-xs px-2 py-1 rounded-full {{ $s['class'] }}">

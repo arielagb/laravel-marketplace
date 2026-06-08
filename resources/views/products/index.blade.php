@@ -76,7 +76,6 @@
     </div>
 
     <div id="noResults" class="hidden text-center py-20 text-gray-400">
-        <div class="text-5xl mb-4">🔍</div>
         <p class="text-lg font-medium">Aucun produit trouvé</p>
         <p class="text-sm mt-1">Essaie avec d'autres mots-clés</p>
     </div>

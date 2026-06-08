@@ -89,6 +89,13 @@ Route::middleware('auth')->group(function () {
     Route::prefix('admin')->name('admin.')->controller(AdminController::class)->group(function () {
         Route::get('/dashboard', 'dashboard')->name('dashboard');
 
+        // Commissions
+        Route::prefix('commissions')->name('commissions.')->group(function(){
+            Route::get('/', 'commissions')->name('index');
+            Route::post('/{shop}/rate', 'updateCommissionRate')->name('rate');
+            Route::post('/settle', 'settleCommissions')->name('settle');
+        });
+
         // Boutiques
         Route::prefix('shops')->name('shops.')->group(function () {
             Route::get('/', 'shops')->name('index');

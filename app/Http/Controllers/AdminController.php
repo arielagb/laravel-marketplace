@@ -152,4 +152,60 @@ class AdminController extends Controller
 
         return view('users.admin.user_show', compact('user', 'shop', 'products', 'orders'));
     }
+
+    public function commissions()
+    {
+        // Charge toutes les boutiques avec leurs commissions non réglées
+        $shops = \App\Models\Shop::where('status', 'active')
+            ->withCount(['commissions as pending_commissions_count' => function($q) {
+                $q->where('is_settled', false);
+            }])
+            ->withSum(['commissions as pending_amount' => function($q) {
+                $q->where('is_settled', false);
+            }], 'amount')
+            ->withSum(['commissions as total_amount' => function($q) {
+                $q->where('is_settled', true);
+            }], 'amount')
+            ->get();
+
+        $totalPending = \App\Models\Commission::where('is_settled', false)->sum('amount');
+        $totalSettled = \App\Models\Commission::where('is_settled', true)->sum('amount');
+
+        return view('users.admin.commissions', compact('shops', 'totalPending', 'totalSettled'));
+    }
+
+    public function updateCommissionRate(Request $request, \App\Models\Shop $shop)
+    {
+        $request->validate([
+            'commission_rate' => 'required|numeric|min:0|max:100',
+        ], [
+            'commission_rate.required' => 'Le taux est obligatoire.',
+            'commission_rate.min'      => 'Le taux ne peut pas être négatif.',
+            'commission_rate.max'      => 'Le taux ne peut pas dépasser 100%.',
+        ]);
+
+        $shop->update(['commission_override' => $request->commission_rate]);
+
+        return back()->with('success', "Taux de \"{$shop->name}\" mis à jour : {$request->commission_rate}%");
+    }
+
+    public function settleCommissions(Request $request)
+    {
+        $request->validate([
+            'shop_id' => 'required|exists:shops,id',
+            'notes'   => 'nullable|string|max:500',
+        ]);
+
+        // Marque toutes les commissions non réglées de cette boutique comme payées
+        $count = \App\Models\Commission::where('shop_id', $request->shop_id)
+            ->where('is_settled', false)
+            ->update([
+                'is_settled' => true,
+                'notes'      => $request->notes,
+            ]);
+
+        $shop = \App\Models\Shop::find($request->shop_id);
+
+        return back()->with('success', "{$count} commission(s) de \"{$shop->name}\" marquée(s) comme réglées.");
+    }
 }

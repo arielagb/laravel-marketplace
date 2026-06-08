@@ -85,12 +85,16 @@ class CheckoutController extends Controller
                 $orderIds[] = $order->id;
 
                 foreach ($items as $item) {
-                    $unitPrice        = $item->product->price;
-                    $totalPrice       = $unitPrice * $item->quantity;
-                    $commissionRate   = 10;
-                    $commissionAmount = $totalPrice * $commissionRate / 100;
+                    $unitPrice   = $item->product->price;
+                    $totalPrice  = $unitPrice * $item->quantity;
 
-                    OrderItem::create([
+                    // On récupère le taux de la boutique (override ou défaut 10%)
+                    $shop = \App\Models\Shop::find($shopId);
+                    $commissionRate   = $shop->getCommissionRate();
+                    $commissionAmount = round($totalPrice * $commissionRate / 100, 2);
+
+                    // Crée la ligne de commande
+                    $orderItem = OrderItem::create([
                         'order_id'          => $order->id,
                         'product_id'        => $item->product_id,
                         'quantity'          => $item->quantity,
@@ -100,7 +104,20 @@ class CheckoutController extends Controller
                         'commission_amount' => $commissionAmount,
                     ]);
 
+                    // Crée l'entrée dans la table commissions
+                    \App\Models\Commission::create([
+                        'order_item_id'  => $orderItem->id,
+                        'shop_id'        => $shopId,
+                        'rate'           => $commissionRate,
+                        'amount'         => $commissionAmount,
+                        'is_settled'     => false,
+                        'calculated_at'  => now(),
+                    ]);
+
+                    // Diminue le stock
                     $item->product->decrement('stock_quantity', $item->quantity);
+
+                    // Supprime l'article du panier
                     $item->delete();
                 }
             }

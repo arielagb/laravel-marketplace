@@ -53,4 +53,18 @@ class Shop extends Model
     {
         return $this->belongsTo(Category::class);
     }
+
+    // Une boutique a plusieurs commissions
+    public function commissions()
+    {
+        return $this->hasMany(Commission::class);
+    }
+
+    // Retourne le taux de commission applicable à cette boutique
+    // Si commission_override est défini, on l'utilise
+    // Sinon on retourne le taux par défaut de 10%
+    public function getCommissionRate(): float
+    {
+        return $this->commission_override ?? 10.0;
+    }
 }

@@ -28,6 +28,21 @@
         </p>
         <p class="text-xs text-gray-400">commandes</p>
     </div>
+        <div class="bg-white rounded-xl shadow-sm p-5">
+        <p class="text-xs text-gray-400 mb-1">Commissions prélevées</p>
+        <p class="text-2xl font-bold text-red-500">
+            {{ number_format($commissionData->pending_commissions ?? 0, 0, ',', ' ') }}
+        </p>
+        <p class="text-xs text-gray-400">FCFA en attente</p>
+    </div>
+
+    <div class="bg-white rounded-xl shadow-sm p-5">
+        <p class="text-xs text-gray-400 mb-1">Revenu net estimé</p>
+        <p class="text-2xl font-bold text-emerald-600">
+            {{ number_format(($totalRevenue ?? 0) - ($commissionData->total_commissions ?? 0), 0, ',', ' ') }}
+        </p>
+        <p class="text-xs text-gray-400">FCFA après commission</p>
+    </div>
 </div>
 
 {{-- Graphe ventes --}}

@@ -12,6 +12,7 @@ class ProductController extends Controller
     public function index()
     {
         $shop = auth()->user()->shop;
+
         $products = Product::where('shop_id', $shop->id)
                         ->where('is_deleted', false)
                         ->latest()
@@ -24,7 +25,6 @@ class ProductController extends Controller
                                 ->take(5)
                                 ->get();
 
-        // Données pour le graphe — ventes des 7 derniers jours
         $salesData = [];
         $labels = [];
         for ($i = 6; $i >= 0; $i--) {
@@ -44,9 +44,18 @@ class ProductController extends Controller
                                         ->where('is_deleted', false)
                                         ->count();
 
+        $commissionData = \App\Models\Commission::where('shop_id', $shop->id)
+            ->selectRaw('
+                SUM(amount) as total_commissions,
+                SUM(CASE WHEN is_settled = 0 THEN amount ELSE 0 END) as pending_commissions,
+                SUM(CASE WHEN is_settled = 1 THEN amount ELSE 0 END) as settled_commissions
+            ')
+            ->first();
+
         return view('users.sellers.dashboard', compact(
             'products', 'shop', 'orders',
-            'salesData', 'labels', 'totalRevenue', 'totalOrders'
+            'salesData', 'labels', 'totalRevenue', 'totalOrders',
+            'commissionData'
         ));
     }
 
